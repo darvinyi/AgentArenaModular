@@ -38,3 +38,6 @@ deactivate
 
 Note: Make sure to activate the virtual environment before running any Python scripts or notebooks in this project.
 
+### Data and Output
+Create directories data and output.  Move `df_randomized.csv` into data as that is a requirement of everything else.
+
