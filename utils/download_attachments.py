@@ -1,6 +1,7 @@
 import os
 import subprocess
 import pandas as pd
+import numpy as np
 
 def download_attachments(uid: str, root_dir: str) -> None:
     """
@@ -75,8 +76,12 @@ def download_all_attachments(csv_path: str, root_dir: str) -> None:
         csv_path (str): Path to the CSV file containing post information
         root_dir (str): Root directory where attachments will be saved
     """
-    # Read the CSV file
-    df = pd.read_csv(csv_path)
+    # Read the CSV file without specifying dtypes to avoid conversion errors
+    df = pd.read_csv(csv_path, dtype={'AGORA_POST_ID':str})
+    
+    
+    # Convert AGORA_POST_ID to string to avoid type issues
+    df['AGORA_POST_ID'] = df['AGORA_POST_ID'].astype(str)
     
     # Filter for posts with attachments
     posts_with_attachments = df[df['HAS_ATTACHMENT'] == True]
@@ -85,7 +90,7 @@ def download_all_attachments(csv_path: str, root_dir: str) -> None:
     
     # Process each post
     for _, row in posts_with_attachments.iterrows():
-        uid = str(row['AGORA_POST_ID'])
+        uid = row['AGORA_POST_ID']
         print(f"\nProcessing post {uid}")
         try:
             download_attachments(uid, root_dir)
@@ -97,3 +102,6 @@ if __name__ == "__main__":
     test_UID = "1886807791342739171"
     root_directory = "data"
     download_attachments(test_UID, root_directory)
+    path_csv = "data/df_randomized_attachment_2_links.csv"
+    save_path = "data"
+    download_all_attachments(path_csv, save_path)
